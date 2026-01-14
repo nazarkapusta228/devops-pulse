@@ -33,20 +33,22 @@ public class SystemService {
             SystemInfo si = new SystemInfo();
             HardwareAbstractionLayer hal = si.getHardware();
 
-            // CPU
+
             CentralProcessor cpu = hal.getProcessor();
             double cpuLoad = cpu.getSystemCpuLoad(1000) * 100;
+            cpuLoad = validateDouble(cpuLoad);
 
-            // Memory
+
             GlobalMemory memory = hal.getMemory();
-            double memoryUsage = 0.0;
-            double totalMemoryGB = 0.0;
-            if (memory.getTotal() > 0) {
-                memoryUsage = (memory.getTotal() - memory.getAvailable()) * 100.0 / memory.getTotal();
-                totalMemoryGB = memory.getTotal() / (1024.0 * 1024.0 * 1024.0);
-            }
+            double memoryUsage = (memory.getTotal() > 0)
+                    ? (memory.getTotal() - memory.getAvailable()) * 100.0 / memory.getTotal()
+                    : 0.0;
+            double totalMemoryGB = (memory.getTotal() > 0)
+                    ? memory.getTotal() / (1024.0 * 1024.0 * 1024.0)
+                    : 0.0;
+            memoryUsage = validateDouble(memoryUsage);
 
-            // Disk
+
             double diskUsage = 0.0;
             double totalSpaceGB = 0.0;
             try {
@@ -61,26 +63,28 @@ public class SystemService {
                     }
                 }
             } catch (SecurityException e) {
+
                 diskUsage = 0.0;
                 totalSpaceGB = 0.0;
             }
+            diskUsage = validateDouble(diskUsage);
 
-            // Processes & Uptime
+
             OperatingSystem os = si.getOperatingSystem();
             int processCount = os.getProcessCount();
             long uptime = os.getSystemUptime();
 
-            // formatted values - завжди з крапкою
+
             systemInfo.put("cpuUsage", decimalFormat.format(cpuLoad));
             systemInfo.put("memoryUsage", decimalFormat.format(memoryUsage));
             systemInfo.put("diskUsage", decimalFormat.format(diskUsage));
 
-            // numeric values
+
             systemInfo.put("cpuUsageValue", cpuLoad);
             systemInfo.put("memoryUsageValue", memoryUsage);
             systemInfo.put("diskUsageValue", diskUsage);
 
-            // Other system metrics
+
             systemInfo.put("totalMemoryGB", decimalFormat.format(totalMemoryGB));
             systemInfo.put("totalDiskSpaceGB", decimalFormat.format(totalSpaceGB));
             systemInfo.put("processCount", processCount);
@@ -88,7 +92,6 @@ public class SystemService {
             systemInfo.put("timestamp", LocalDateTime.now().toString());
 
         } catch (Exception e) {
-            // Якщо щось пішло не так
             systemInfo.put("cpuUsage", "0.00");
             systemInfo.put("memoryUsage", "0.00");
             systemInfo.put("diskUsage", "0.00");
@@ -103,5 +106,13 @@ public class SystemService {
         }
 
         return systemInfo;
+    }
+
+
+    private double validateDouble(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            return 0.0;
+        }
+        return value;
     }
 }
