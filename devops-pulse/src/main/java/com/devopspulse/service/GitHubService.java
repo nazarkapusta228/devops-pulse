@@ -1,10 +1,8 @@
 package com.devopspulse.service;
 
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +11,7 @@ import java.util.Map;
 public class GitHubService {
     private final RestTemplate restTemplate;
 
-
-    public GitHubService(RestTemplate restTemplate){
+    public GitHubService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
 
         restTemplate.getInterceptors().add((request, body, execution) -> {
@@ -23,21 +20,17 @@ public class GitHubService {
         });
     }
 
-
     public Map<String, Object> getUserInfo(String username) {
         String url = "https://api.github.com/users/" + username;
 
         try {
-
             Map<String, Object> gitHubInfo = restTemplate.getForObject(url, Map.class);
-
-
             return createSuccessResponse(gitHubInfo);
 
         } catch (HttpClientErrorException.NotFound e) {
             return createNotFoundResponse(username);
 
-        }  catch (HttpClientErrorException.TooManyRequests e) {
+        } catch (HttpClientErrorException.TooManyRequests e) {
             return createErrorResponse("Rate limit exceeded",
                     "GitHub API rate limit reached. Try again in an hour.");
 
@@ -52,7 +45,6 @@ public class GitHubService {
         response.put("username", gitHubInfo.get("login"));
         response.put("publicRepos", gitHubInfo.get("public_repos"));
         response.put("followers", gitHubInfo.get("followers"));
-
 
         response.put("name", gitHubInfo.getOrDefault("name", "Not specified"));
         response.put("location", gitHubInfo.getOrDefault("location", "Not specified"));
