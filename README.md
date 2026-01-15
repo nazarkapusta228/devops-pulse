@@ -87,10 +87,6 @@ Error handling scenarios
 Service layer logic
 
 
-**Project Stats**
-Languages: Java (45.8%), JavaScript (29.4%), CSS (18.3%), HTML (6.5%)
-
-Commits: 11+ commits with active development
 
 Status: Complete backend with real API integrations
 
