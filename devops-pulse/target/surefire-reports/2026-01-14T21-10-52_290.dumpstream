@@ -1,5 +1,0 @@
-# Created at 2026-01-14T21:10:52.464
-Boot Manifest-JAR contains absolute paths in classpath 'E:\personal_projects\devops-pulse\devops-pulse\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-
