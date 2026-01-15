@@ -44,7 +44,7 @@ Clone the repository:
 git clone https://github.com/nazarkapusta228/devops-pulse.git
 
 Navigate to the project directory:
-cd devops-pulse/devops-pulse
+cd devops-pulse
 
 Build the project:
 mvn clean package
